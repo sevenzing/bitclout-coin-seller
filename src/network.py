@@ -1,3 +1,4 @@
+from fake_useragent import UserAgent
 import requests
 import enum
 import typing
@@ -8,15 +9,18 @@ class CoinOperationType(enum.Enum):
     BUY = 'buy'
 
 
-def safePost(url, payload, *args, **kwargs):
-    response = requests.post(url, json=payload, *args, **kwargs)
+def safePost(url, payload, *args, **kwargs):   
+    headers = kwargs.get('headers', {})
+    headers["User-Agent"] = str(UserAgent().chrome)
+    response = requests.post(url, json=payload, headers=headers, *args, **kwargs)
+    
     if not response.ok:
         try:
             error = response.json()["error"]
         except:
             error = response.content
         
-        raise ValueError(f"response error: {error}")
+        raise ValueError(f"response error to {url}: {error}")
 
     return response
 
