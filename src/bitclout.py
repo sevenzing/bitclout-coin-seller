@@ -1,5 +1,4 @@
 import dataclasses
-from types import resolve_bases
 import typing
 import logging
 
